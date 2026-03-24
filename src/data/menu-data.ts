@@ -67,7 +67,7 @@ export const menuItems: MenuItem[] = [
     description: 'Bolinha crocante recheada com queijo derretido. Porção com 10 unidades.',
     price: 15.90,
     category: 'salgados',
-    image: 'https://images.unsplash.com/photo-1541592106381-b31e9677c0e5?w=400&h=300&fit=crop',
+    image: 'https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=400&h=300&fit=crop',
   },
   {
     id: 'suco-natural',
@@ -100,7 +100,7 @@ export const menuItems: MenuItem[] = [
     description: 'Açaí puro cremoso com granola, banana, leite em pó e mel. Puro sabor!',
     price: 16.90,
     category: 'acai',
-    image: 'https://images.unsplash.com/photo-1590080875515-8a3a8dc5735e?w=400&h=300&fit=crop',
+    image: 'https://images.unsplash.com/photo-1590288488147-f46142daf112?w=400&h=300&fit=crop',
     badge: 'popular',
   },
   {
@@ -109,7 +109,7 @@ export const menuItems: MenuItem[] = [
     description: 'Açaí cremoso com morango, kiwi, granola, leite condensado e paçoca.',
     price: 24.90,
     category: 'acai',
-    image: 'https://images.unsplash.com/photo-1546173159-315724a31696?w=400&h=300&fit=crop',
+    image: 'https://images.unsplash.com/photo-1590301157411-8686d4a34f10?w=400&h=300&fit=crop',
   },
   {
     id: 'batata-frita',
@@ -117,7 +117,7 @@ export const menuItems: MenuItem[] = [
     description: 'Porção generosa de batata frita crocante com cheddar e bacon.',
     price: 19.90,
     category: 'porcoes',
-    image: 'https://images.unsplash.com/photo-1534308983496-4fabb1a015ee?w=400&h=300&fit=crop',
+    image: 'https://images.unsplash.com/photo-1599082295807-6e4a92c0790d?w=400&h=300&fit=crop',
     badge: 'popular',
   },
   {
