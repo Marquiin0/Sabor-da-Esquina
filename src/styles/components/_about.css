@@ -65,12 +65,11 @@
   background: var(--color-white);
   border-radius: var(--border-radius);
   box-shadow: var(--shadow-sm);
-  transition: transform var(--transition-base), box-shadow var(--transition-base);
+  transition: transform 0.25s ease;
 }
 
 .about__stat:hover {
   transform: translateY(-4px);
-  box-shadow: var(--shadow-md);
 }
 
 .about__stat-number {

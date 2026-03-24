@@ -9,16 +9,19 @@ export class ScrollAnimator {
 
     const observer = new IntersectionObserver(
       (entries) => {
-        entries.forEach((entry) => {
+        for (const entry of entries) {
           if (entry.isIntersecting) {
-            entry.target.classList.add('revealed');
+            // Use RAF to batch class additions into a single frame
+            requestAnimationFrame(() => {
+              (entry.target as HTMLElement).classList.add('revealed');
+            });
             observer.unobserve(entry.target);
           }
-        });
+        }
       },
       {
-        threshold: 0.15,
-        rootMargin: '0px 0px -50px 0px',
+        threshold: 0.1,
+        rootMargin: '0px 0px -60px 0px',
       }
     );
 

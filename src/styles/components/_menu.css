@@ -56,13 +56,12 @@
   border-radius: var(--border-radius);
   overflow: hidden;
   box-shadow: var(--shadow-sm);
-  transition: transform var(--transition-base), box-shadow var(--transition-base);
+  transition: transform 0.25s ease;
   position: relative;
 }
 
 .menu__card:hover {
   transform: translateY(-6px);
-  box-shadow: var(--shadow-lg);
 }
 
 /* 3D tilt - styles set via CSS vars from JS */

@@ -28,14 +28,12 @@
   border-radius: var(--border-radius);
   padding: var(--space-2xl);
   text-align: center;
-  transition: all var(--transition-base);
+  transition: transform 0.25s ease, border-color 0.25s ease;
 }
 
 .specialties__card:hover {
   transform: translateY(-8px);
-  background: rgba(255, 255, 255, 0.06);
   border-color: rgba(255, 107, 53, 0.4);
-  box-shadow: 0 0 30px rgba(255, 107, 53, 0.1);
 }
 
 .specialties__icon {

@@ -75,7 +75,7 @@ export const menuItems: MenuItem[] = [
     description: 'Suco feito na hora com frutas frescas. Sabores: laranja, maracujá, limão, abacaxi.',
     price: 9.90,
     category: 'bebidas',
-    image: 'https://images.unsplash.com/photo-1625938145744-533e82ea5ad2?w=400&h=300&fit=crop',
+    image: 'https://images.unsplash.com/photo-1621506289937-a8e4df240d0b?w=400&h=300&fit=crop',
   },
   {
     id: 'milkshake',
@@ -109,7 +109,7 @@ export const menuItems: MenuItem[] = [
     description: 'Açaí cremoso com morango, kiwi, granola, leite condensado e paçoca.',
     price: 24.90,
     category: 'acai',
-    image: 'https://images.unsplash.com/photo-1615478503562-ec2d8aa0a24b?w=400&h=300&fit=crop',
+    image: 'https://images.unsplash.com/photo-1546173159-315724a31696?w=400&h=300&fit=crop',
   },
   {
     id: 'batata-frita',

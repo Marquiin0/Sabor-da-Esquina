@@ -4,53 +4,43 @@
 
 [data-animate] {
   opacity: 0;
-  transition: opacity var(--transition-slow), transform var(--transition-slow);
+  /* Use shorter, GPU-only transitions for smooth scroll */
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  will-change: opacity, transform;
 }
 
 [data-animate].revealed {
   opacity: 1;
   transform: none;
+  /* Remove will-change after animation completes to free GPU memory */
+  will-change: auto;
+  transition: opacity 0.4s ease, transform 0.4s ease;
 }
 
-/* Direction variants */
-[data-animate="fade-up"] { transform: translateY(40px); }
-[data-animate="fade-down"] { transform: translateY(-40px); }
-[data-animate="fade-left"] { transform: translateX(60px); }
-[data-animate="fade-right"] { transform: translateX(-60px); }
-[data-animate="scale-in"] { transform: scale(0.85); }
-[data-animate="rotate-in"] { transform: rotate(-5deg) scale(0.9); }
-[data-animate="zoom-in"] { transform: scale(0.6); }
+/* Direction variants - smaller offsets = less work */
+[data-animate="fade-up"] { transform: translateY(30px); }
+[data-animate="fade-down"] { transform: translateY(-30px); }
+[data-animate="fade-left"] { transform: translateX(40px); }
+[data-animate="fade-right"] { transform: translateX(-40px); }
+[data-animate="scale-in"] { transform: scale(0.9); }
+[data-animate="rotate-in"] { transform: rotate(-3deg) scale(0.95); }
+[data-animate="zoom-in"] { transform: scale(0.7); }
 
 /* Stagger delays */
-[data-delay="1"] { transition-delay: 100ms; }
-[data-delay="2"] { transition-delay: 200ms; }
-[data-delay="3"] { transition-delay: 300ms; }
-[data-delay="4"] { transition-delay: 400ms; }
-[data-delay="5"] { transition-delay: 500ms; }
-[data-delay="6"] { transition-delay: 600ms; }
+[data-delay="1"] { transition-delay: 80ms; }
+[data-delay="2"] { transition-delay: 160ms; }
+[data-delay="3"] { transition-delay: 240ms; }
+[data-delay="4"] { transition-delay: 320ms; }
+[data-delay="5"] { transition-delay: 400ms; }
+[data-delay="6"] { transition-delay: 480ms; }
 
 /* ==============================
    Keyframe animations
    ============================== */
 
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
-}
-
 @keyframes pulse {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.5; }
-}
-
-@keyframes glow {
-  0%, 100% { box-shadow: 0 0 20px rgba(255, 107, 53, 0.3); }
-  50% { box-shadow: 0 0 40px rgba(255, 107, 53, 0.6); }
-}
-
-@keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
 }
 
 @keyframes scroll-down {
@@ -64,14 +54,9 @@
   to { transform: rotate(360deg); }
 }
 
-@keyframes slide-up {
-  from { transform: translateY(100%); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
-}
-
 @keyframes bounce-in {
   0% { transform: scale(0); }
-  50% { transform: scale(1.1); }
+  50% { transform: scale(1.05); }
   100% { transform: scale(1); }
 }
 
@@ -85,11 +70,11 @@
 @keyframes char-reveal {
   from {
     opacity: 0;
-    transform: translateY(30px) rotateX(-40deg);
+    transform: translateY(20px);
   }
   to {
     opacity: 1;
-    transform: translateY(0) rotateX(0);
+    transform: translateY(0);
   }
 }
 
@@ -123,5 +108,6 @@
     opacity: 1;
     transform: none;
     transition: none;
+    will-change: auto;
   }
 }

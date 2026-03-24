@@ -25,27 +25,26 @@
 
 .hero__layer--bg {
   background-image: url('https://images.unsplash.com/photo-1466978913421-dad2ebd01d17?w=1920&q=80');
-  filter: brightness(0.4);
+  /* No filter - overlay handles darkening (filter causes heavy compositing) */
 }
 
 .hero__layer--smoke {
-  background: radial-gradient(ellipse at center, rgba(255, 107, 53, 0.12) 0%, transparent 70%);
+  background: radial-gradient(ellipse at center, rgba(255, 107, 53, 0.1) 0%, transparent 70%);
 }
 
 .hero__layer--food {
-  /* Lightweight decorative layer - no extra image load */
-  background: radial-gradient(circle at 85% 60%, rgba(255, 107, 53, 0.06) 0%, transparent 40%);
+  background: radial-gradient(circle at 85% 60%, rgba(255, 107, 53, 0.05) 0%, transparent 40%);
 }
 
-/* Overlay */
+/* Overlay - handles darkening instead of filter */
 .hero__overlay {
   position: absolute;
   inset: 0;
   z-index: 1;
   background: linear-gradient(
     180deg,
-    rgba(26, 15, 7, 0.6) 0%,
-    rgba(26, 15, 7, 0.4) 40%,
+    rgba(26, 15, 7, 0.7) 0%,
+    rgba(26, 15, 7, 0.55) 40%,
     rgba(26, 15, 7, 0.7) 100%
   );
 }

@@ -7,6 +7,9 @@
 
 .section {
   padding-block: var(--space-section);
+  /* Skip rendering of off-screen sections */
+  content-visibility: auto;
+  contain-intrinsic-size: auto 800px;
 }
 
 .sr-only {
