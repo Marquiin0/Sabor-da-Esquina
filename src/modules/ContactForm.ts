@@ -10,6 +10,12 @@ export class ContactForm {
 
     if (!this.form) return;
 
+    // Phone mask
+    const phoneInput = $<HTMLInputElement>('#phone', this.form);
+    if (phoneInput) {
+      phoneInput.addEventListener('input', () => this.applyPhoneMask(phoneInput));
+    }
+
     // Real-time validation
     const inputs = $$<HTMLInputElement | HTMLTextAreaElement>('.form__input', this.form);
     inputs.forEach((input) => {
@@ -25,6 +31,27 @@ export class ContactForm {
     this.form.addEventListener('submit', (e) => this.handleSubmit(e));
   }
 
+  private applyPhoneMask(input: HTMLInputElement): void {
+    let value = input.value.replace(/\D/g, '');
+
+    if (value.length > 11) value = value.slice(0, 11);
+
+    if (value.length > 6) {
+      // (XX) XXXXX-XXXX or (XX) XXXX-XXXX
+      const ddd = value.slice(0, 2);
+      const hasNine = value.length > 10;
+      if (hasNine) {
+        input.value = `(${ddd}) ${value.slice(2, 7)}-${value.slice(7)}`;
+      } else {
+        input.value = `(${ddd}) ${value.slice(2, 6)}-${value.slice(6)}`;
+      }
+    } else if (value.length > 2) {
+      input.value = `(${value.slice(0, 2)}) ${value.slice(2)}`;
+    } else if (value.length > 0) {
+      input.value = `(${value}`;
+    }
+  }
+
   private validateField(input: HTMLInputElement | HTMLTextAreaElement): boolean {
     const feedback = input.parentElement?.querySelector('.form__feedback');
 
@@ -36,6 +63,15 @@ export class ContactForm {
     if (input.type === 'email' && input.value && !input.validity.valid) {
       this.showError(input, feedback, 'Insira um e-mail válido');
       return false;
+    }
+
+    // Phone validation
+    if (input.type === 'tel' && input.value) {
+      const digits = input.value.replace(/\D/g, '');
+      if (digits.length < 10) {
+        this.showError(input, feedback, 'Telefone deve ter pelo menos 10 dígitos');
+        return false;
+      }
     }
 
     if (input.minLength > 0 && input.value.length < input.minLength) {
@@ -64,7 +100,6 @@ export class ContactForm {
       feedback.textContent = message;
       feedback.classList.add('form__feedback--visible');
     }
-    // Shake animation
     input.style.animation = 'none';
     requestAnimationFrame(() => {
       input.style.animation = 'shake 0.4s ease';
