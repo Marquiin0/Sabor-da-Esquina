@@ -494,6 +494,10 @@ export class AccountPage {
     const display = $('#profile-display');
     const editForm = $<HTMLFormElement>('#profile-edit');
 
+    // Phone mask
+    const phoneInput = $<HTMLInputElement>('#edit-phone');
+    phoneInput?.addEventListener('input', () => this.applyPhoneMask(phoneInput));
+
     $('#edit-profile-btn')?.addEventListener('click', () => {
       if (display) display.style.display = 'none';
       if (editForm) editForm.style.display = '';
@@ -524,6 +528,20 @@ export class AccountPage {
     $('#change-pw-btn')?.addEventListener('click', () => {
       this.showToast('Funcionalidade de alterar senha em breve!');
     });
+  }
+
+  // ─── Phone Mask ───
+
+  private applyPhoneMask(input: HTMLInputElement): void {
+    let digits = input.value.replace(/\D/g, '');
+    if (digits.length > 11) digits = digits.slice(0, 11);
+    if (digits.length <= 2) {
+      input.value = digits.length ? `(${digits}` : '';
+    } else if (digits.length <= 7) {
+      input.value = `(${digits.slice(0, 2)}) ${digits.slice(2)}`;
+    } else {
+      input.value = `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7)}`;
+    }
   }
 
   // ─── Toast ───
