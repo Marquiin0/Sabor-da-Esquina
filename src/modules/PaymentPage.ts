@@ -32,7 +32,8 @@ export class PaymentPage {
   private shippingMethod = 'padrao';
   private discount = 0;
   private appliedCoupon = '';
-  private paymentMethod = 'pix';
+  private paymentMethod = '';
+  private paymentConfirmed = false;
   private pixInterval: ReturnType<typeof setInterval> | null = null;
 
   init(): void {
@@ -46,11 +47,10 @@ export class PaymentPage {
     this.renderSummary();
     this.bindSteps();
     this.bindShipping();
-    this.bindCoupon();
+    this.bindCouponDrawer();
     this.bindPaymentMethods();
     this.bindMasks();
     this.bindBackButtons();
-    this.startPixTimer();
   }
 
   // ─── Summary ───
@@ -173,45 +173,98 @@ export class PaymentPage {
     });
   }
 
-  // ─── Coupon ───
+  // ─── Coupon Drawer ───
 
-  private bindCoupon(): void {
-    $('#apply-coupon')?.addEventListener('click', () => {
-      const input = $<HTMLInputElement>('#pay-coupon');
-      const feedback = $('#coupon-feedback');
-      if (!input || !feedback) return;
+  private bindCouponDrawer(): void {
+    const trigger = $('#coupon-trigger');
+    const drawer = $('#coupon-drawer');
+    const backdrop = $('#coupon-backdrop');
+    const closeBtn = $('#coupon-close');
+    const applyBtn = $('#coupon-apply');
+    const addBtn = $('#coupon-add-btn');
+    const codeInput = $<HTMLInputElement>('#coupon-code-input');
+    const feedback = $('#coupon-drawer-feedback');
 
-      const code = input.value.trim().toUpperCase();
+    const openDrawer = () => {
+      drawer?.classList.add('coupon-drawer--open');
+      backdrop?.classList.add('coupon-backdrop--visible');
+      document.body.style.overflow = 'hidden';
+    };
+
+    const closeDrawer = () => {
+      drawer?.classList.remove('coupon-drawer--open');
+      backdrop?.classList.remove('coupon-backdrop--visible');
+      document.body.style.overflow = '';
+    };
+
+    trigger?.addEventListener('click', openDrawer);
+    closeBtn?.addEventListener('click', closeDrawer);
+    backdrop?.addEventListener('click', closeDrawer);
+
+    // Add code manually
+    addBtn?.addEventListener('click', () => {
+      if (!codeInput || !feedback) return;
+      const code = codeInput.value.trim().toUpperCase();
       const coupon = COUPONS.find((c) => c.code === code);
 
       if (!code) {
         feedback.textContent = 'Digite um código';
-        feedback.className = 'pay__coupon-feedback pay__coupon-feedback--error';
+        feedback.className = 'coupon-drawer__feedback coupon-drawer__feedback--error';
         return;
       }
 
       if (!coupon) {
         feedback.textContent = 'Cupom inválido';
-        feedback.className = 'pay__coupon-feedback pay__coupon-feedback--error';
+        feedback.className = 'coupon-drawer__feedback coupon-drawer__feedback--error';
         return;
       }
 
-      this.appliedCoupon = coupon.code;
-      this.discount = coupon.value;
-      feedback.textContent = `✓ ${coupon.label} aplicado!`;
-      feedback.className = 'pay__coupon-feedback pay__coupon-feedback--success';
-      input.disabled = true;
-      ($('#apply-coupon') as HTMLButtonElement).disabled = true;
+      // Select the matching radio
+      const radio = document.querySelector<HTMLInputElement>(`input[name="coupon-select"][value="${coupon.code}"]`);
+      if (radio) radio.checked = true;
+      feedback.textContent = `✓ Cupom "${coupon.code}" encontrado!`;
+      feedback.className = 'coupon-drawer__feedback coupon-drawer__feedback--success';
+    });
+
+    // Apply selected coupon
+    applyBtn?.addEventListener('click', () => {
+      const selected = document.querySelector<HTMLInputElement>('input[name="coupon-select"]:checked');
+      if (!selected) return;
+
+      const code = selected.value;
+      const coupon = COUPONS.find((c) => c.code === code);
+
+      this.appliedCoupon = code;
+      this.discount = coupon?.value || 0;
+
+      const triggerSub = $('#coupon-trigger-sub');
+      const triggerEl = $('#coupon-trigger');
+      if (triggerSub) {
+        if (coupon) {
+          triggerSub.textContent = `✓ ${coupon.label} aplicado`;
+          triggerEl?.classList.add('pay__coupon-trigger--applied');
+        } else {
+          triggerSub.textContent = 'Cupons disponíveis';
+          triggerEl?.classList.remove('pay__coupon-trigger--applied');
+        }
+      }
 
       this.updateTotals();
+      closeDrawer();
     });
   }
 
   // ─── Payment Methods ───
 
   private bindPaymentMethods(): void {
+    const methodsContainer = $('#payment-methods');
+    const confirmContainer = $('#method-confirm');
+    const selectedInfo = $('#method-selected-info');
+
     document.querySelectorAll<HTMLElement>('.pay__method').forEach((btn) => {
       btn.addEventListener('click', () => {
+        if (this.paymentConfirmed) return;
+
         const method = btn.dataset.method;
         if (!method) return;
 
@@ -220,8 +273,39 @@ export class PaymentPage {
         document.querySelectorAll('.pay__method').forEach((b) => b.classList.remove('pay__method--active'));
         btn.classList.add('pay__method--active');
 
+        // Confirm: hide methods, show selected, show content
+        this.paymentConfirmed = true;
+        if (methodsContainer) methodsContainer.style.display = 'none';
+        if (confirmContainer) confirmContainer.removeAttribute('hidden');
+
+        const labels: Record<string, string> = { pix: '📱 Pix', credito: '💳 Cartão de Crédito', debito: '💳 Cartão de Débito' };
+        if (selectedInfo) {
+          selectedInfo.innerHTML = `
+            <span>${labels[method] || method}</span>
+            <button type="button" class="pay__method-change" id="change-method">Alterar</button>
+          `;
+
+          // Bind change button
+          $('#change-method')?.addEventListener('click', () => {
+            this.paymentConfirmed = false;
+            this.paymentMethod = '';
+            if (methodsContainer) methodsContainer.style.display = '';
+            if (confirmContainer) confirmContainer.setAttribute('hidden', '');
+            document.querySelectorAll('.pay__method').forEach((b) => b.classList.remove('pay__method--active'));
+            document.querySelectorAll('.pay__method-content').forEach((c) => c.classList.add('pay__method-content--hidden'));
+            if (this.pixInterval) {
+              clearInterval(this.pixInterval);
+              this.pixInterval = null;
+            }
+          });
+        }
+
+        // Show content
         document.querySelectorAll('.pay__method-content').forEach((c) => c.classList.add('pay__method-content--hidden'));
         $(`#method-${method}`)?.classList.remove('pay__method-content--hidden');
+
+        // Start pix timer only when pix is confirmed
+        if (method === 'pix') this.startPixTimer();
       });
     });
   }

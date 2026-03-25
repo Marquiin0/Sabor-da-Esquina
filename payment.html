@@ -167,18 +167,20 @@
           <form class="pay__form pay__form--hidden" id="step-3" novalidate>
             <h2 class="pay__form-title">Pagamento</h2>
 
-            <!-- Cupom -->
-            <div class="pay__coupon">
-              <div class="pay__coupon-input">
-                <input type="text" id="pay-coupon" class="form__input form__input--coupon" placeholder="Código do cupom" />
-                <button type="button" class="btn btn--sm pay__coupon-btn" id="apply-coupon">Aplicar</button>
+            <!-- Cupom Trigger -->
+            <button type="button" class="pay__coupon-trigger" id="coupon-trigger">
+              <span class="pay__coupon-trigger-icon">🎟️</span>
+              <div class="pay__coupon-trigger-info">
+                <span class="pay__coupon-trigger-title">Cupom</span>
+                <span class="pay__coupon-trigger-sub" id="coupon-trigger-sub">Cupons disponíveis</span>
               </div>
-              <span class="pay__coupon-feedback" id="coupon-feedback"></span>
-            </div>
+              <span class="pay__coupon-trigger-arrow">›</span>
+            </button>
 
-            <!-- Métodos -->
-            <div class="pay__methods">
-              <button type="button" class="pay__method pay__method--active" data-method="pix">
+            <!-- Métodos de pagamento -->
+            <h3 class="pay__subtitle">Forma de pagamento</h3>
+            <div class="pay__methods" id="payment-methods">
+              <button type="button" class="pay__method" data-method="pix">
                 <span class="pay__method-icon">📱</span> Pix
               </button>
               <button type="button" class="pay__method" data-method="credito">
@@ -189,8 +191,13 @@
               </button>
             </div>
 
-            <!-- Pix -->
-            <div class="pay__method-content" id="method-pix">
+            <!-- Confirmação do método -->
+            <div class="pay__method-confirm" id="method-confirm" hidden>
+              <div class="pay__method-selected" id="method-selected-info"></div>
+            </div>
+
+            <!-- Pix (escondido até confirmar) -->
+            <div class="pay__method-content pay__method-content--hidden" id="method-pix">
               <div class="pay__pix">
                 <div class="pay__pix-qr">
                   <div class="pay__pix-qr-placeholder">
@@ -314,5 +321,77 @@
       </div>
     </main>
   </div>
+
+  <!-- Cupons Drawer -->
+  <div class="coupon-backdrop" id="coupon-backdrop"></div>
+  <aside class="coupon-drawer" id="coupon-drawer" role="dialog" aria-label="Cupons">
+    <div class="coupon-drawer__header">
+      <button type="button" class="coupon-drawer__close" id="coupon-close">&times;</button>
+      <h2 class="coupon-drawer__title">CUPONS</h2>
+    </div>
+    <div class="coupon-drawer__body">
+      <div class="coupon-drawer__input">
+        <input type="text" id="coupon-code-input" placeholder="Código de cupom" />
+        <button type="button" class="coupon-drawer__add-btn" id="coupon-add-btn">Adicionar</button>
+      </div>
+      <span class="coupon-drawer__feedback" id="coupon-drawer-feedback"></span>
+
+      <div class="coupon-drawer__list">
+        <label class="coupon-card">
+          <input type="radio" name="coupon-select" value="" checked />
+          <div class="coupon-card__content">
+            <span class="coupon-card__icon">🎟️</span>
+            <div class="coupon-card__info">
+              <span class="coupon-card__name">Sem cupom</span>
+              <span class="coupon-card__desc">Nenhum cupom aplicado</span>
+            </div>
+            <div class="coupon-card__radio"></div>
+          </div>
+        </label>
+
+        <label class="coupon-card">
+          <input type="radio" name="coupon-select" value="PRIMEIRA30" />
+          <div class="coupon-card__content">
+            <span class="coupon-card__icon">🔥</span>
+            <div class="coupon-card__info">
+              <span class="coupon-card__name">30% de desconto</span>
+              <span class="coupon-card__desc">Primeira compra</span>
+              <span class="coupon-card__code">PRIMEIRA30</span>
+            </div>
+            <div class="coupon-card__radio"></div>
+          </div>
+        </label>
+
+        <label class="coupon-card">
+          <input type="radio" name="coupon-select" value="SABOR10" />
+          <div class="coupon-card__content">
+            <span class="coupon-card__icon">💰</span>
+            <div class="coupon-card__info">
+              <span class="coupon-card__name">10% de desconto</span>
+              <span class="coupon-card__desc">Válido para todos os pedidos</span>
+              <span class="coupon-card__code">SABOR10</span>
+            </div>
+            <div class="coupon-card__radio"></div>
+          </div>
+        </label>
+
+        <label class="coupon-card">
+          <input type="radio" name="coupon-select" value="FRETEGRATIS" />
+          <div class="coupon-card__content">
+            <span class="coupon-card__icon">🚀</span>
+            <div class="coupon-card__info">
+              <span class="coupon-card__name">Frete grátis</span>
+              <span class="coupon-card__desc">Entrega sem custo</span>
+              <span class="coupon-card__code">FRETEGRATIS</span>
+            </div>
+            <div class="coupon-card__radio"></div>
+          </div>
+        </label>
+      </div>
+    </div>
+    <div class="coupon-drawer__footer">
+      <button type="button" class="btn btn--primary btn--lg coupon-drawer__apply" id="coupon-apply">Aplicar Cupom</button>
+    </div>
+  </aside>
 </body>
 </html>
