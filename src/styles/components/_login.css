@@ -648,12 +648,13 @@
   border: none;
   border-radius: var(--border-radius-lg);
   padding: 0;
+  background: var(--color-white);
   box-shadow: var(--shadow-xl);
   animation: legal-modal-in 300ms ease both;
 }
 
 .legal-modal::backdrop {
-  background: rgba(26, 15, 7, 0.6);
+  background: rgba(26, 15, 7, 0.75);
   animation: legal-backdrop-in 300ms ease both;
 }
 
