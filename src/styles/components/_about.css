@@ -78,6 +78,8 @@
   font-weight: 700;
   color: var(--color-primary);
   font-variant-numeric: tabular-nums;
+  display: inline-block;
+  min-width: 1.5ch;
 }
 
 .about__stat-suffix {
