@@ -445,6 +445,16 @@
 
 .pay__pix-qr { margin-bottom: var(--space-lg); }
 
+.pay__pix-qr-placeholder {
+  display: flex;
+  justify-content: center;
+}
+
+#qr-canvas {
+  border-radius: var(--border-radius-sm);
+  border: 1px solid #E5E5E5;
+}
+
 .pay__pix-instruction {
   font-size: var(--text-sm);
   color: var(--color-text-muted);

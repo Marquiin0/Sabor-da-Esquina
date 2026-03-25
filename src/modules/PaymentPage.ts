@@ -305,9 +305,98 @@ export class PaymentPage {
         $(`#method-${method}`)?.classList.remove('pay__method-content--hidden');
 
         // Start pix timer only when pix is confirmed
-        if (method === 'pix') this.startPixTimer();
+        if (method === 'pix') {
+          this.generateQRCode();
+          this.startPixTimer();
+        }
       });
     });
+  }
+
+  // ─── QR Code Generator ───
+
+  private generateQRCode(): void {
+    const canvas = document.getElementById('qr-canvas') as HTMLCanvasElement | null;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const size = 200;
+    const modules = 29;
+    const moduleSize = Math.floor((size - 20) / modules);
+    const offset = Math.floor((size - modules * moduleSize) / 2);
+    const dark = '#1a0f07';
+
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, size, size);
+
+    // Seeded random for consistent pattern
+    let seed = 42;
+    const rand = () => { seed = (seed * 16807 + 0) % 2147483647; return seed / 2147483647; };
+
+    // Draw finder patterns (3 corners)
+    const drawFinder = (x: number, y: number) => {
+      ctx.fillStyle = dark;
+      ctx.fillRect(offset + x * moduleSize, offset + y * moduleSize, 7 * moduleSize, 7 * moduleSize);
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(offset + (x + 1) * moduleSize, offset + (y + 1) * moduleSize, 5 * moduleSize, 5 * moduleSize);
+      ctx.fillStyle = dark;
+      ctx.fillRect(offset + (x + 2) * moduleSize, offset + (y + 2) * moduleSize, 3 * moduleSize, 3 * moduleSize);
+    };
+
+    drawFinder(0, 0);
+    drawFinder(modules - 7, 0);
+    drawFinder(0, modules - 7);
+
+    // Timing patterns
+    ctx.fillStyle = dark;
+    for (let i = 8; i < modules - 8; i++) {
+      if (i % 2 === 0) {
+        ctx.fillRect(offset + i * moduleSize, offset + 6 * moduleSize, moduleSize, moduleSize);
+        ctx.fillRect(offset + 6 * moduleSize, offset + i * moduleSize, moduleSize, moduleSize);
+      }
+    }
+
+    // Data modules (pseudo-random)
+    for (let row = 0; row < modules; row++) {
+      for (let col = 0; col < modules; col++) {
+        // Skip finder areas
+        if (row < 8 && col < 8) continue;
+        if (row < 8 && col >= modules - 8) continue;
+        if (row >= modules - 8 && col < 8) continue;
+        // Skip timing
+        if (row === 6 || col === 6) continue;
+        // Skip center (logo area)
+        if (row >= 11 && row <= 17 && col >= 11 && col <= 17) continue;
+
+        if (rand() > 0.5) {
+          ctx.fillStyle = dark;
+          ctx.fillRect(offset + col * moduleSize, offset + row * moduleSize, moduleSize, moduleSize);
+        }
+      }
+    }
+
+    // Center logo
+    const cx = size / 2;
+    const cy = size / 2;
+    const logoSize = 36;
+
+    ctx.fillStyle = '#ffffff';
+    ctx.beginPath();
+    ctx.roundRect(cx - logoSize / 2 - 4, cy - logoSize / 2 - 4, logoSize + 8, logoSize + 8, 6);
+    ctx.fill();
+
+    ctx.fillStyle = '#FF6B35';
+    ctx.beginPath();
+    ctx.roundRect(cx - logoSize / 2, cy - logoSize / 2, logoSize, logoSize, 4);
+    ctx.fill();
+
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 20px "Playfair Display", Georgia, serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('S', cx, cy + 1);
   }
 
   // ─── Pix Timer ───
