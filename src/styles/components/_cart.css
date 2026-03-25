@@ -335,7 +335,7 @@
   height: 44px;
   border: none;
   background: transparent;
-  color: var(--color-white);
+  color: var(--color-primary);
   cursor: pointer;
   transition: color var(--transition-fast);
   padding: 0;
@@ -343,7 +343,7 @@
 }
 
 .header__cart:hover {
-  color: var(--color-primary);
+  color: var(--color-primary-dark);
 }
 
 .header__cart svg {
@@ -387,11 +387,11 @@
 
 /* Header scrolled state */
 .header--scrolled .header__cart {
-  color: var(--color-secondary);
+  color: var(--color-primary);
 }
 
 .header--scrolled .header__cart:hover {
-  color: var(--color-primary);
+  color: var(--color-primary-dark);
 }
 
 /* ===========================
