@@ -103,6 +103,8 @@
   border-radius: var(--border-radius-full);
   transition: all var(--transition-base);
   z-index: 10;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .header__login-link:hover {
@@ -124,6 +126,8 @@
 .header__cta {
   display: none;
   z-index: 10;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 /* Hamburger */
