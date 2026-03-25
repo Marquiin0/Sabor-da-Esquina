@@ -23,6 +23,7 @@
 .testimonials__slide {
   min-width: 100%;
   padding-inline: var(--space-sm);
+  display: flex;
 }
 
 @media (min-width: 768px) {
@@ -43,6 +44,9 @@
   padding: var(--space-2xl) var(--space-2xl) var(--space-xl);
   box-shadow: var(--shadow-md);
   position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
 
 .testimonials__card::before {
@@ -70,6 +74,7 @@
   line-height: 1.7;
   margin-bottom: var(--space-xl);
   font-style: italic;
+  flex: 1;
 }
 
 .testimonials__author {
