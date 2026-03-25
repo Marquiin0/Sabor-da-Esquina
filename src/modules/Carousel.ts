@@ -23,19 +23,34 @@ export class Carousel {
     this.bindTouch();
     this.bindHover();
     this.startAutoplay();
+
+    // Recalculate dots on resize (visible count changes)
+    window.addEventListener('resize', () => this.onResize());
+  }
+
+  private get visibleCount(): number {
+    if (window.innerWidth >= 1024) return 3;
+    if (window.innerWidth >= 768) return 2;
+    return 1;
+  }
+
+  private get maxIndex(): number {
+    return Math.max(0, this.slides.length - this.visibleCount);
   }
 
   private createDots(): void {
     if (!this.dotsContainer) return;
+    this.dotsContainer.innerHTML = '';
 
-    this.slides.forEach((_, i) => {
+    const totalDots = this.maxIndex + 1;
+    for (let i = 0; i < totalDots; i++) {
       const dot = createElement('button', {
         className: `testimonials__dot${i === 0 ? ' testimonials__dot--active' : ''}`,
         'aria-label': `Ir para depoimento ${i + 1}`,
       });
       dot.addEventListener('click', () => this.goTo(i));
-      this.dotsContainer!.appendChild(dot);
-    });
+      this.dotsContainer.appendChild(dot);
+    }
   }
 
   private bindArrows(): void {
@@ -78,32 +93,42 @@ export class Carousel {
   }
 
   private prev(): void {
-    const index = this.currentIndex === 0 ? this.slides.length - 1 : this.currentIndex - 1;
+    const index = this.currentIndex === 0 ? this.maxIndex : this.currentIndex - 1;
     this.goTo(index);
   }
 
   private next(): void {
-    const index = this.currentIndex === this.slides.length - 1 ? 0 : this.currentIndex + 1;
+    const index = this.currentIndex >= this.maxIndex ? 0 : this.currentIndex + 1;
     this.goTo(index);
   }
 
   private goTo(index: number): void {
-    this.currentIndex = index;
+    this.currentIndex = Math.min(index, this.maxIndex);
+    const slideWidth = 100 / this.visibleCount;
 
     if (this.track) {
-      this.track.style.transform = `translateX(-${index * 100}%)`;
+      this.track.style.transform = `translateX(-${this.currentIndex * slideWidth}%)`;
     }
 
     // Update dots
     const dots = $$('.testimonials__dot', this.dotsContainer!);
     dots.forEach((dot, i) => {
-      dot.classList.toggle('testimonials__dot--active', i === index);
+      dot.classList.toggle('testimonials__dot--active', i === this.currentIndex);
     });
+  }
+
+  private onResize(): void {
+    this.createDots();
+    if (this.currentIndex > this.maxIndex) {
+      this.goTo(this.maxIndex);
+    } else {
+      this.goTo(this.currentIndex);
+    }
   }
 
   private startAutoplay(): void {
     this.stopAutoplay();
-    this.autoplayId = setInterval(() => this.next(), 5000);
+    this.autoplayId = setInterval(() => this.next(), 4000);
   }
 
   private stopAutoplay(): void {

@@ -4,9 +4,8 @@
 
 .testimonials__carousel {
   position: relative;
-  max-width: 800px;
+  max-width: 1200px;
   margin-inline: auto;
-  /* No overflow hidden here - arrows need to be visible outside */
   padding-inline: var(--space-3xl);
 }
 
@@ -24,6 +23,18 @@
 .testimonials__slide {
   min-width: 100%;
   padding-inline: var(--space-sm);
+}
+
+@media (min-width: 768px) {
+  .testimonials__slide {
+    min-width: 50%;
+  }
+}
+
+@media (min-width: 1024px) {
+  .testimonials__slide {
+    min-width: 33.333%;
+  }
 }
 
 .testimonials__card {
