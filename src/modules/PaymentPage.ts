@@ -1,18 +1,6 @@
 import { $ } from '../utils/dom';
 import { CartState } from '../data/CartState';
-
-interface Coupon {
-  code: string;
-  type: 'percent' | 'freeShipping';
-  value: number;
-  label: string;
-}
-
-const COUPONS: Coupon[] = [
-  { code: 'PRIMEIRA30', type: 'percent', value: 30, label: '30% de desconto' },
-  { code: 'SABOR10', type: 'percent', value: 10, label: '10% de desconto' },
-  { code: 'FRETEGRATIS', type: 'freeShipping', value: 0, label: 'Frete grátis' },
-];
+import { COUPONS, CouponState } from '../data/CouponState';
 
 const SHIPPING: Record<string, number> = {
   padrao: 5.90,
@@ -185,7 +173,51 @@ export class PaymentPage {
     const codeInput = $<HTMLInputElement>('#coupon-code-input');
     const feedback = $('#coupon-drawer-feedback');
 
+    const renderCouponList = () => {
+      const list = drawer?.querySelector('.coupon-drawer__list');
+      if (!list) return;
+
+      const coupons = CouponState.getAvailableCoupons();
+      list.innerHTML = `
+        <label class="coupon-card">
+          <input type="radio" name="coupon-select" value="" checked />
+          <div class="coupon-card__content">
+            <span class="coupon-card__icon">🎟️</span>
+            <div class="coupon-card__info">
+              <span class="coupon-card__name">Sem cupom</span>
+              <span class="coupon-card__desc">Nenhum cupom aplicado</span>
+            </div>
+            <div class="coupon-card__radio"></div>
+          </div>
+        </label>
+        ${coupons.map((c) => {
+          const exhausted = c.remaining <= 0;
+          return `
+            <label class="coupon-card ${exhausted ? 'coupon-card--disabled' : ''}">
+              <input type="radio" name="coupon-select" value="${c.code}" ${exhausted ? 'disabled' : ''} />
+              <div class="coupon-card__content">
+                <span class="coupon-card__icon">${c.icon}</span>
+                <div class="coupon-card__info">
+                  <span class="coupon-card__name">${c.label}</span>
+                  <span class="coupon-card__desc">${c.description}</span>
+                  <div class="coupon-card__meta">
+                    <span class="coupon-card__code">${c.code}</span>
+                    ${exhausted
+                      ? '<span class="coupon-card__exhausted">Esgotado</span>'
+                      : `<span class="coupon-card__remaining">${c.remaining}/${c.maxUses} uso(s) restante(s)</span>`
+                    }
+                  </div>
+                </div>
+                <div class="coupon-card__radio"></div>
+              </div>
+            </label>
+          `;
+        }).join('')}
+      `;
+    };
+
     const openDrawer = () => {
+      renderCouponList();
       drawer?.classList.add('coupon-drawer--open');
       backdrop?.classList.add('coupon-backdrop--visible');
       document.body.style.overflow = 'hidden';
@@ -215,6 +247,12 @@ export class PaymentPage {
 
       if (!coupon) {
         feedback.textContent = 'Cupom inválido';
+        feedback.className = 'coupon-drawer__feedback coupon-drawer__feedback--error';
+        return;
+      }
+
+      if (!CouponState.isAvailable(coupon.code)) {
+        feedback.textContent = 'Cupom já foi utilizado o máximo de vezes';
         feedback.className = 'coupon-drawer__feedback coupon-drawer__feedback--error';
         return;
       }
@@ -621,6 +659,11 @@ export class PaymentPage {
 
     CartState.saveOrder(orderData);
     CartState.saveOrderToHistory(orderData);
+
+    // Mark coupon as used
+    if (this.appliedCoupon) {
+      CouponState.markUsed(this.appliedCoupon);
+    }
 
     setTimeout(() => {
       CartState.clear();

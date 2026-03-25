@@ -784,6 +784,35 @@
   font-weight: 600;
 }
 
+.coupon-card__meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-top: 4px;
+}
+
+.coupon-card__remaining {
+  font-size: 0.7rem;
+  color: var(--color-success);
+  font-weight: 500;
+}
+
+.coupon-card__exhausted {
+  font-size: 0.7rem;
+  color: var(--color-error);
+  font-weight: 600;
+}
+
+.coupon-card--disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.coupon-card--disabled .coupon-card__content {
+  background: var(--color-bg-cream);
+  border-color: #E5E5E5;
+}
+
 .coupon-card__radio {
   width: 20px;
   height: 20px;
