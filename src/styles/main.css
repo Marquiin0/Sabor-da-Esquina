@@ -23,6 +23,7 @@
 @import './components/_product.css';
 @import './components/_payment.css';
 @import './components/_confirmation.css';
+@import './components/_tracking.css';
 
 /* Responsive overrides */
 @import './_responsive.css';

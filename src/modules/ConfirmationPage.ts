@@ -13,9 +13,6 @@ export class ConfirmationPage {
     this.renderOrder(order);
     this.bindTracking();
     this.launchConfetti();
-
-    // Clean up order data after displaying
-    CartState.clearOrder();
   }
 
   private renderOrder(order: ReturnType<typeof CartState.getOrder>): void {
@@ -76,11 +73,9 @@ export class ConfirmationPage {
   }
 
   private bindTracking(): void {
-    const modal = $<HTMLDialogElement>('#track-modal');
-    $('#track-order')?.addEventListener('click', () => modal?.showModal());
-    $('#track-close')?.addEventListener('click', () => modal?.close());
-    modal?.addEventListener('click', (e) => {
-      if (e.target === modal) modal.close();
+    $('#track-order')?.addEventListener('click', () => {
+      const base = import.meta.env.BASE_URL;
+      window.location.href = `${base}tracking.html`;
     });
   }
 
