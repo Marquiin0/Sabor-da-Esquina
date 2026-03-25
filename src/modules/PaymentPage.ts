@@ -284,12 +284,15 @@ export class PaymentPage {
       else input.value = `${digits.slice(0, 3)}.${digits.slice(3, 6)}.${digits.slice(6, 9)}-${digits.slice(9)}`;
     });
 
-    // CEP
-    $<HTMLInputElement>('#pay-cep')?.addEventListener('input', (e) => {
+    // CEP + auto-fill via ViaCEP
+    const cepInput = $<HTMLInputElement>('#pay-cep');
+    cepInput?.addEventListener('input', (e) => {
       const input = e.target as HTMLInputElement;
       let digits = input.value.replace(/\D/g, '');
       if (digits.length > 8) digits = digits.slice(0, 8);
       input.value = digits.length > 5 ? `${digits.slice(0, 5)}-${digits.slice(5)}` : digits;
+
+      if (digits.length === 8) this.fetchCep(digits);
     });
 
     // Card numbers
@@ -315,6 +318,50 @@ export class PaymentPage {
     };
     maskExpiry('card-expiry');
     maskExpiry('debit-expiry');
+  }
+
+  // ─── CEP Auto-fill ───
+
+  private async fetchCep(cep: string): Promise<void> {
+    const street = $<HTMLInputElement>('#pay-street');
+    const neighborhood = $<HTMLInputElement>('#pay-neighborhood');
+    const city = $<HTMLInputElement>('#pay-city');
+    const state = $<HTMLInputElement>('#pay-state');
+    const cepInput = $<HTMLInputElement>('#pay-cep');
+    const feedback = cepInput?.closest('.form__group')?.querySelector('.form__feedback');
+
+    try {
+      const res = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+      const data = await res.json();
+
+      if (data.erro) {
+        if (feedback) feedback.textContent = 'CEP não encontrado';
+        cepInput?.classList.add('form__input--error');
+        return;
+      }
+
+      if (feedback) feedback.textContent = '';
+      cepInput?.classList.remove('form__input--error');
+      cepInput?.classList.add('form__input--valid');
+
+      if (street && data.logradouro) street.value = data.logradouro;
+      if (neighborhood && data.bairro) neighborhood.value = data.bairro;
+      if (city && data.localidade) city.value = data.localidade;
+      if (state && data.uf) state.value = data.uf;
+
+      // Trigger label float on filled fields
+      [street, neighborhood, city, state].forEach((input) => {
+        if (input && input.value) {
+          input.classList.add('form__input--valid');
+          input.dispatchEvent(new Event('input', { bubbles: true }));
+        }
+      });
+
+      // Focus on number field
+      $<HTMLInputElement>('#pay-number')?.focus();
+    } catch {
+      if (feedback) feedback.textContent = 'Erro ao buscar CEP';
+    }
   }
 
   // ─── Validation ───
