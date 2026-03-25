@@ -112,6 +112,14 @@
 .acc__coupon-expiry { font-size: var(--text-xs); color: var(--color-text-muted); }
 .acc__coupon-copy { padding: var(--space-md) var(--space-lg); background: transparent; border: none; border-left: 1px solid rgba(0,0,0,0.06); font-family: var(--font-accent); font-size: var(--text-sm); font-weight: 600; color: var(--color-primary); cursor: pointer; transition: background var(--transition-fast); align-self: stretch; flex-shrink: 0; }
 .acc__coupon-copy:hover { background: rgba(255, 107, 53, 0.08); }
+.acc__coupon-copy--disabled { color: var(--color-text-muted); cursor: default; pointer-events: none; }
+
+.acc__coupon-card--exhausted { opacity: 0.5; }
+.acc__coupon-card--exhausted .acc__coupon-left { background: rgba(0,0,0,0.04); }
+
+.acc__coupon-usage { margin-top: 4px; }
+.acc__coupon-remaining { font-size: 0.7rem; color: var(--color-success); font-weight: 500; }
+.acc__coupon-exhausted { font-size: 0.7rem; color: var(--color-error); font-weight: 600; }
 
 /* Addresses */
 .acc__address-card { position: relative; }
