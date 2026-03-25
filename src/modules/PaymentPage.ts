@@ -1,6 +1,7 @@
 import { $ } from '../utils/dom';
 import { CartState } from '../data/CartState';
 import { COUPONS, CouponState } from '../data/CouponState';
+import { UserState } from '../data/UserState';
 
 const SHIPPING: Record<string, number> = {
   padrao: 5.90,
@@ -39,6 +40,40 @@ export class PaymentPage {
     this.bindPaymentMethods();
     this.bindMasks();
     this.bindBackButtons();
+    this.prefillData();
+  }
+
+  // ─── Prefill from User Data ───
+
+  private prefillData(): void {
+    const user = UserState.get();
+    if (user) {
+      this.setField('#pay-name', user.name);
+      this.setField('#pay-email', user.email);
+      if (user.phone) this.setField('#pay-phone', user.phone);
+    }
+
+    // Fill address from default saved address
+    const addresses = UserState.getAddresses();
+    const defaultAddr = addresses.find((a) => a.isDefault) || addresses[0];
+    if (defaultAddr) {
+      this.setField('#pay-cep', defaultAddr.cep);
+      this.setField('#pay-street', defaultAddr.street);
+      this.setField('#pay-number', defaultAddr.number);
+      this.setField('#pay-complement', defaultAddr.complement);
+      this.setField('#pay-neighborhood', defaultAddr.neighborhood);
+      this.setField('#pay-city', defaultAddr.city);
+      this.setField('#pay-state', defaultAddr.state);
+    }
+  }
+
+  private setField(selector: string, value: string): void {
+    const input = $<HTMLInputElement>(selector);
+    if (input && value) {
+      input.value = value;
+      // Trigger input event to activate floating labels and masks
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+    }
   }
 
   // ─── Summary ───
