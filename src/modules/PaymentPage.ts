@@ -591,7 +591,7 @@ export class PaymentPage {
 
     const orderNumber = `SE-${String(Math.floor(100000 + Math.random() * 900000))}`;
 
-    CartState.saveOrder({
+    const orderData = {
       items: CartState.getItems(),
       subtotal,
       shipping,
@@ -617,7 +617,10 @@ export class PaymentPage {
       shippingMethod: this.shippingMethod,
       orderNumber,
       estimatedTime: SHIPPING_TIMES[this.shippingMethod] || '30-45 min',
-    });
+    };
+
+    CartState.saveOrder(orderData);
+    CartState.saveOrderToHistory(orderData);
 
     setTimeout(() => {
       CartState.clear();

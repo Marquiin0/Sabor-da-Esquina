@@ -24,6 +24,7 @@
 @import './components/_payment.css';
 @import './components/_confirmation.css';
 @import './components/_tracking.css';
+@import './components/_account.css';
 
 /* Responsive overrides */
 @import './_responsive.css';

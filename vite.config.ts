@@ -25,6 +25,7 @@ export default {
         payment: resolve(__dirname, 'payment.html'),
         confirmation: resolve(__dirname, 'confirmation.html'),
         tracking: resolve(__dirname, 'tracking.html'),
+        account: resolve(__dirname, 'account.html'),
       },
       output: {
         manualChunks: undefined,

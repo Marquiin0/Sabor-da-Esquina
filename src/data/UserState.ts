@@ -4,8 +4,22 @@ export interface User {
   phone: string;
 }
 
+export interface Address {
+  id: string;
+  label: string;
+  cep: string;
+  street: string;
+  number: string;
+  complement: string;
+  neighborhood: string;
+  city: string;
+  state: string;
+  isDefault: boolean;
+}
+
 const USER_KEY = 'sabor_user';
 const USERS_KEY = 'sabor_users';
+const ADDR_KEY = 'sabor_addresses';
 
 export class UserState {
   static save(user: User): void {
@@ -45,7 +59,7 @@ export class UserState {
     return user.name.trim().split(/\s+/)[0];
   }
 
-  // ─── User Registry (for login validation) ───
+  // ─── User Registry ───
 
   static register(user: User): void {
     const users = this.getAllUsers();
@@ -71,5 +85,37 @@ export class UserState {
     } catch {
       return [];
     }
+  }
+
+  // ─── Addresses ───
+
+  static getAddresses(): Address[] {
+    try {
+      const data = localStorage.getItem(ADDR_KEY);
+      return data ? JSON.parse(data) : [];
+    } catch {
+      return [];
+    }
+  }
+
+  static saveAddress(addr: Address): void {
+    const addrs = this.getAddresses();
+    const idx = addrs.findIndex((a) => a.id === addr.id);
+    if (idx >= 0) {
+      addrs[idx] = addr;
+    } else {
+      addrs.push(addr);
+    }
+    localStorage.setItem(ADDR_KEY, JSON.stringify(addrs));
+  }
+
+  static removeAddress(id: string): void {
+    const addrs = this.getAddresses().filter((a) => a.id !== id);
+    localStorage.setItem(ADDR_KEY, JSON.stringify(addrs));
+  }
+
+  static setDefaultAddress(id: string): void {
+    const addrs = this.getAddresses().map((a) => ({ ...a, isDefault: a.id === id }));
+    localStorage.setItem(ADDR_KEY, JSON.stringify(addrs));
   }
 }

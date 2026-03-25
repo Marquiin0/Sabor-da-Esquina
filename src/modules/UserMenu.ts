@@ -124,18 +124,27 @@ export class UserMenu {
       if (!item) return;
 
       const action = item.dataset.action;
+      const base = import.meta.env.BASE_URL;
+
       switch (action) {
         case 'logout':
           UserState.logout();
           window.location.reload();
           break;
         case 'account':
+          window.location.href = `${base}account.html#dashboard`;
+          break;
         case 'orders':
+          window.location.href = `${base}account.html#orders`;
+          break;
         case 'coupons':
+          window.location.href = `${base}account.html#coupons`;
+          break;
         case 'addresses':
+          window.location.href = `${base}account.html#addresses`;
+          break;
         case 'data':
-          this.showComingSoon();
-          this.close();
+          window.location.href = `${base}account.html#profile`;
           break;
       }
     });
@@ -157,14 +166,4 @@ export class UserMenu {
     this.trigger?.setAttribute('aria-expanded', 'false');
   }
 
-  private showComingSoon(): void {
-    // Reuse cart toast if available, otherwise create temp toast
-    const toast = $('#cart-toast');
-    const text = $('#cart-toast-text');
-    if (toast && text) {
-      text.textContent = 'Em breve! Funcionalidade em desenvolvimento.';
-      toast.classList.add('cart-toast--visible');
-      setTimeout(() => toast.classList.remove('cart-toast--visible'), 3000);
-    }
-  }
 }

@@ -36,6 +36,7 @@ export interface OrderData {
 
 const CART_KEY = 'sabor_cart';
 const ORDER_KEY = 'sabor_order';
+const HISTORY_KEY = 'sabor_orders';
 
 export class CartState {
   static getItems(): CartItem[] {
@@ -108,5 +109,22 @@ export class CartState {
 
   static clearOrder(): void {
     localStorage.removeItem(ORDER_KEY);
+  }
+
+  // ─── Order History ───
+
+  static saveOrderToHistory(order: OrderData): void {
+    const history = this.getOrderHistory();
+    history.unshift({ ...order, date: new Date().toISOString() } as OrderData & { date: string });
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(history.slice(0, 50)));
+  }
+
+  static getOrderHistory(): (OrderData & { date?: string })[] {
+    try {
+      const data = localStorage.getItem(HISTORY_KEY);
+      return data ? JSON.parse(data) : [];
+    } catch {
+      return [];
+    }
   }
 }
