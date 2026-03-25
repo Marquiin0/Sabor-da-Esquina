@@ -231,17 +231,26 @@ export class AccountPage {
   // ─── Coupons ───
 
   private renderCoupons(): void {
-    const coupons = CouponState.getAvailableCoupons();
+    const all = CouponState.getAvailableCoupons();
+    const active = all.filter((c) => c.remaining > 0);
+    const used = all.filter((c) => c.remaining <= 0);
 
     this.content!.innerHTML = `
       <div class="acc__section acc__section--animate">
         <h1 class="acc__page-title">Meus Cupons</h1>
         <p class="acc__page-subtitle">Cupons disponíveis para usar nas suas compras</p>
-        <div class="acc__coupons-grid">
-          ${coupons.map((c) => {
-            const exhausted = c.remaining <= 0;
-            return `
-              <div class="acc__coupon-card ${exhausted ? 'acc__coupon-card--exhausted' : ''}">
+        ${active.length === 0 && used.length === 0 ? `
+          <div class="acc__empty">
+            <span class="acc__empty-icon">🎟️</span>
+            <h3 class="acc__empty-title">Nenhum cupom disponível</h3>
+            <p class="acc__empty-text">No momento não há cupons ativos. Volte em breve!</p>
+          </div>
+        ` : ''}
+
+        ${active.length > 0 ? `
+          <div class="acc__coupons-grid">
+            ${active.map((c) => `
+              <div class="acc__coupon-card">
                 <div class="acc__coupon-left">
                   <span class="acc__coupon-icon">${c.icon}</span>
                 </div>
@@ -253,20 +262,32 @@ export class AccountPage {
                     <span class="acc__coupon-expiry">Válido até ${c.expiry}</span>
                   </div>
                   <div class="acc__coupon-usage">
-                    ${exhausted
-                      ? '<span class="acc__coupon-exhausted">Esgotado</span>'
-                      : `<span class="acc__coupon-remaining">${c.remaining}/${c.maxUses} uso(s) restante(s)</span>`
-                    }
+                    <span class="acc__coupon-remaining">${c.remaining}/${c.maxUses} uso(s) restante(s)</span>
                   </div>
                 </div>
-                ${exhausted
-                  ? '<span class="acc__coupon-copy acc__coupon-copy--disabled">Esgotado</span>'
-                  : `<button class="acc__coupon-copy" data-code="${c.code}">Copiar</button>`
-                }
+                <button class="acc__coupon-copy" data-code="${c.code}">Copiar</button>
               </div>
-            `;
-          }).join('')}
-        </div>
+            `).join('')}
+          </div>
+        ` : ''}
+
+        ${used.length > 0 ? `
+          <h3 class="acc__subsection-title">Cupons utilizados</h3>
+          <div class="acc__coupons-grid">
+            ${used.map((c) => `
+              <div class="acc__coupon-card acc__coupon-card--exhausted">
+                <div class="acc__coupon-left">
+                  <span class="acc__coupon-icon">${c.icon}</span>
+                </div>
+                <div class="acc__coupon-info">
+                  <span class="acc__coupon-name">${c.label}</span>
+                  <span class="acc__coupon-desc">Usado ${c.used}/${c.maxUses} vez(es)</span>
+                </div>
+                <span class="acc__coupon-copy acc__coupon-copy--disabled">Usado</span>
+              </div>
+            `).join('')}
+          </div>
+        ` : ''}
       </div>
     `;
 

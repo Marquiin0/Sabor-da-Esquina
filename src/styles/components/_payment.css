@@ -843,6 +843,13 @@
 
 .coupon-drawer__apply { width: 100%; }
 
+.coupon-drawer__empty {
+  text-align: center;
+  padding: var(--space-xl);
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+}
+
 /* Responsive */
 @media (min-width: 768px) {
   .pay__layout {

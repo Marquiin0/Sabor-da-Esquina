@@ -177,7 +177,7 @@ export class PaymentPage {
       const list = drawer?.querySelector('.coupon-drawer__list');
       if (!list) return;
 
-      const coupons = CouponState.getAvailableCoupons();
+      const coupons = CouponState.getActiveCoupons();
       list.innerHTML = `
         <label class="coupon-card">
           <input type="radio" name="coupon-select" value="" checked />
@@ -190,29 +190,27 @@ export class PaymentPage {
             <div class="coupon-card__radio"></div>
           </div>
         </label>
-        ${coupons.map((c) => {
-          const exhausted = c.remaining <= 0;
-          return `
-            <label class="coupon-card ${exhausted ? 'coupon-card--disabled' : ''}">
-              <input type="radio" name="coupon-select" value="${c.code}" ${exhausted ? 'disabled' : ''} />
-              <div class="coupon-card__content">
-                <span class="coupon-card__icon">${c.icon}</span>
-                <div class="coupon-card__info">
-                  <span class="coupon-card__name">${c.label}</span>
-                  <span class="coupon-card__desc">${c.description}</span>
-                  <div class="coupon-card__meta">
-                    <span class="coupon-card__code">${c.code}</span>
-                    ${exhausted
-                      ? '<span class="coupon-card__exhausted">Esgotado</span>'
-                      : `<span class="coupon-card__remaining">${c.remaining}/${c.maxUses} uso(s) restante(s)</span>`
-                    }
-                  </div>
+        ${coupons.length === 0 ? `
+          <div class="coupon-drawer__empty">
+            <p>Nenhum cupom disponível no momento.</p>
+          </div>
+        ` : coupons.map((c) => `
+          <label class="coupon-card">
+            <input type="radio" name="coupon-select" value="${c.code}" />
+            <div class="coupon-card__content">
+              <span class="coupon-card__icon">${c.icon}</span>
+              <div class="coupon-card__info">
+                <span class="coupon-card__name">${c.label}</span>
+                <span class="coupon-card__desc">${c.description}</span>
+                <div class="coupon-card__meta">
+                  <span class="coupon-card__code">${c.code}</span>
+                  <span class="coupon-card__remaining">${c.remaining}/${c.maxUses} uso(s) restante(s)</span>
                 </div>
-                <div class="coupon-card__radio"></div>
               </div>
-            </label>
-          `;
-        }).join('')}
+              <div class="coupon-card__radio"></div>
+            </div>
+          </label>
+        `).join('')}
       `;
     };
 

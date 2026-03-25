@@ -17,8 +17,8 @@ export const COUPONS: Coupon[] = [
     type: 'percent',
     value: 30,
     label: '30% de desconto',
-    description: 'Cupom de boas-vindas — limite de 5 usos',
-    maxUses: 5,
+    description: 'Válido apenas na primeira compra',
+    maxUses: 1,
     icon: '🔥',
     expiry: '30/04/2026',
   },
@@ -27,7 +27,7 @@ export const COUPONS: Coupon[] = [
     type: 'percent',
     value: 10,
     label: '10% de desconto',
-    description: 'Desconto em qualquer pedido — limite de 5 usos',
+    description: 'Válido para até 5 pedidos',
     maxUses: 5,
     icon: '💰',
     expiry: '15/05/2026',
@@ -37,8 +37,8 @@ export const COUPONS: Coupon[] = [
     type: 'freeShipping',
     value: 0,
     label: 'Frete grátis',
-    description: 'Entrega sem custo — limite de 5 usos',
-    maxUses: 5,
+    description: 'Válido para até 3 pedidos',
+    maxUses: 3,
     icon: '🚀',
     expiry: '20/04/2026',
   },
@@ -84,5 +84,9 @@ export class CouponState {
       remaining: this.getRemainingUses(c.code),
       used: this.getTimesUsed(c.code),
     }));
+  }
+
+  static getActiveCoupons(): (Coupon & { remaining: number; used: number })[] {
+    return this.getAvailableCoupons().filter((c) => c.remaining > 0);
   }
 }
