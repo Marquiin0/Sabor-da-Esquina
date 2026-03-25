@@ -1,21 +1,19 @@
 import { $$ } from '../utils/dom';
 
 export class ScrollAnimator {
+  private observer: IntersectionObserver | null = null;
+
   init(): void {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-    const elements = $$<HTMLElement>('[data-animate]');
-    if (elements.length === 0) return;
-
-    const observer = new IntersectionObserver(
+    this.observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
           if (entry.isIntersecting) {
-            // Use RAF to batch class additions into a single frame
             requestAnimationFrame(() => {
               (entry.target as HTMLElement).classList.add('revealed');
             });
-            observer.unobserve(entry.target);
+            this.observer!.unobserve(entry.target);
           }
         }
       },
@@ -25,6 +23,24 @@ export class ScrollAnimator {
       }
     );
 
-    elements.forEach((el) => observer.observe(el));
+    // Observe existing elements
+    $$<HTMLElement>('[data-animate]').forEach((el) => this.observer!.observe(el));
+
+    // Watch for dynamically added [data-animate] elements
+    const mutation = new MutationObserver((mutations) => {
+      for (const m of mutations) {
+        for (const node of m.addedNodes) {
+          if (!(node instanceof HTMLElement)) continue;
+          if (node.hasAttribute('data-animate') && !node.classList.contains('revealed')) {
+            this.observer!.observe(node);
+          }
+          node.querySelectorAll<HTMLElement>('[data-animate]:not(.revealed)').forEach((el) => {
+            this.observer!.observe(el);
+          });
+        }
+      }
+    });
+
+    mutation.observe(document.body, { childList: true, subtree: true });
   }
 }
