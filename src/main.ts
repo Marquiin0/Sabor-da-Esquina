@@ -7,6 +7,7 @@ import { ScrollAnimator } from './modules/ScrollAnimator';
 import { SmoothScroll } from './modules/SmoothScroll';
 import { MenuFilter } from './modules/MenuFilter';
 import { Carousel } from './modules/Carousel';
+import { IngredientsMarquee } from './modules/IngredientsMarquee';
 import { Gallery } from './modules/Gallery';
 import { Counter } from './modules/Counter';
 import { ContactForm } from './modules/ContactForm';
@@ -30,6 +31,7 @@ const modules: PageModule[] = [
   new MenuFilter(),
   new Cart(),
   new Carousel(),
+  new IngredientsMarquee(),
   new Gallery(),
   new Counter(),
   new ContactForm(),

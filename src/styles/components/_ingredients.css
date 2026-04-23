@@ -1,0 +1,119 @@
+.ingredients {
+  background: var(--color-bg-light);
+  overflow: hidden;
+  padding-bottom: var(--space-section);
+}
+
+.ingredients__carousel {
+  position: relative;
+  margin-top: var(--space-2xl);
+  width: 100%;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    #000 8%,
+    #000 92%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    #000 8%,
+    #000 92%,
+    transparent 100%
+  );
+}
+
+.ingredients__track {
+  display: flex;
+  gap: var(--space-xl);
+  width: max-content;
+  animation: ingredients-scroll 40s linear infinite;
+  will-change: transform;
+}
+
+.ingredients__carousel:hover .ingredients__track,
+.ingredients__carousel:focus-within .ingredients__track {
+  animation-play-state: paused;
+}
+
+.ingredients__card {
+  flex: 0 0 auto;
+  width: 180px;
+  padding: var(--space-lg);
+  background: var(--color-white);
+  border: 1px solid rgba(45, 27, 14, 0.08);
+  border-radius: var(--border-radius);
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--transition-base), box-shadow var(--transition-base),
+    border-color var(--transition-base);
+}
+
+.ingredients__card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-md);
+  border-color: rgba(255, 107, 53, 0.35);
+}
+
+.ingredients__image {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 50%;
+  margin: 0 auto var(--space-md);
+  display: block;
+  background: var(--color-bg-cream);
+}
+
+.ingredients__name {
+  font-family: var(--font-accent);
+  font-size: var(--text-base);
+  font-weight: 600;
+  color: var(--color-secondary);
+  margin-bottom: var(--space-xs);
+}
+
+.ingredients__desc {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  line-height: 1.5;
+}
+
+@keyframes ingredients-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ingredients__track {
+    animation: none;
+  }
+  .ingredients__carousel {
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+  }
+  .ingredients__card {
+    scroll-snap-align: center;
+  }
+}
+
+@media (max-width: 640px) {
+  .ingredients__card {
+    width: 150px;
+    padding: var(--space-md);
+  }
+  .ingredients__image {
+    width: 96px;
+    height: 96px;
+  }
+  .ingredients__track {
+    gap: var(--space-md);
+    animation-duration: 30s;
+  }
+}
