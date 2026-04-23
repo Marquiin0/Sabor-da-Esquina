@@ -8,7 +8,7 @@ export default {
   build: {
     outDir: 'dist',
     assetsInlineLimit: 4096,
-    cssMinify: 'lightningcss',
+    cssMinify: true,
     minify: 'terser',
     terserOptions: {
       compress: {
@@ -35,8 +35,5 @@ export default {
   },
   server: {
     open: true,
-  },
-  css: {
-    transformer: 'lightningcss',
   },
 } satisfies UserConfig;
